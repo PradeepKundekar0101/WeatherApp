@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+    <title>Result</title>
+</head>
+<style>
+    body
+    {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        font-family: 'Roboto', sans-serif;
+        background-image: url("cold.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        backdrop-filter: blur(20px);
+    }
+    .container
+    {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        display: flex;
+        flex-direction: column;
+        width: 30vw;
+        height: 80vh;
+        border-radius: 10px;
+        justify-content:center;
+        align-items: center;
+        background-color: aqua;
+        text-align: center;
+        background-image: linear-gradient(0deg,rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url("cold.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        color: #fff;
+    }
+    .heading
+    
+    .placeDate h1
+    {
+       text-align: center;
+       font-size: 1.5vw; 
+    }
+    #celsius
+    {
+        padding-bottom: 10px;
+        border-bottom: 4px dotted #fff;
+        font-size: 3vw;
+    }
+    .dateInfo
+    {
+        font-size: 2vw;
+    }
+    @media screen and (max-width:600px) {
+        .container
+        {
+            width: 80vw;
+        }
+        #celsius
+        {
+            font-size: 30px;
+        }
+    }
+</style>
+<body>
+    <div class="container">
+       
+        <div class="placeDate">
+          <b>  <h1 id='location'>
+               
+            </h1>
+        </b>
+        <h2 id="dateInfo"></h2>
+        </div>
+       
+       
+        <div class="temp">
+            <h1 id="celsius">
+                
+            </h1>
+        </div>
+
+        <div class="conditionWind">
+            <h3 id="condition">
+             
+            </h3>
+            <img id="conditionImg" alt='img' >
+            <h3 id="wind">
+               
+            </h3>
+        </div>
+    </div>
+</body>
+<script>
+    let loc=window.localStorage.getItem('place');
+    let currentLocation=document.getElementById("location");
+    
+    currentLocation.innerText=loc.toUpperCase();;
+    const url=`https://api.weatherapi.com/v1/current.json?key=8da6835d80bb4bf2a51134016202412&q=${loc}&aqi=no`;
+    let windData;
+    let conditionData;
+    let tempData;
+    function getData()
+    {
+        
+        fetch(url).then((response)=>
+            {
+            
+                return response.json();
+            }).then((data)=>
+            {
+                console.log(data);
+                // Accessing the Data from the API returned JSON 
+                conditionData=data.current.condition.text;
+                windData=data.current.wind_kph;
+                tempData=data.current.temp_c;
+                conditionDataImg=data.current.condition.icon;
+
+                //Selecting The Data Cells of the DOM
+                let tempCell=document.getElementById("celsius");
+                let conditionCell=document.getElementById("condition");
+                let windCell=document.getElementById("wind");
+                let conditionImage=document.getElementById('conditionImg'); 
+                
+                //Assigining the Values 
+                windCell.innerText=windData+"km/hr";
+                tempCell.innerHTML=tempData+"&deg;C";
+                conditionCell.innerHTML=conditionData;
+                conditionImage.src=conditionDataImg;  
+                console.log(conditionDataImg);             
+                //Changing Background Image According to Condition 
+                // if(conditionData=='sunny')
+                //     document.body.style.backgroundImage = url('https://source.unsplash.com/1600x900/?sunny');         
+                // else if(conditionData==="Partly couldy")
+                //     document.body.style.backgroundImage = url('https://source.unsplash.com/1600x900/?couldy');
+            //let footer=document.getElementById("footer");
+           // footer.innerText=data.location.name +", "+data.location.region;   
+            })
+    }
+    function setDate()
+    {
+
+        let weekDay=document.getElementById("dateInfo");
+        let time= new Date();
+        weekDay.innerText=getweekDay(time.getDay())+" "+getMonthName(time.getMonth())+" "+time.getDate()+", " +time.getFullYear();
+    }
+    function getweekDay()
+    {
+        let time= new Date();
+        let weekNo=time.getDay();
+        if(weekNo==0)
+            return 'Sunday';
+        else if(weekNo==1)
+            return 'Monday';
+        else if(weekNo==2)
+            return 'Tuesday';
+        else if(weekNo==3)
+            return 'Wednesday';
+        else if(weekNo==4)
+            return 'Thursday';
+        else if(weekNo==5)
+            return 'Friday';
+        else if(weekNo==6)
+            return 'Saturday';
+    }
+    function getMonthName()
+    {
+        let time =new Date();
+        let monthNo=time.getMonth();
+        if(monthNo==0)
+            return 'January';
+        else if(monthNo==1)
+            return 'February';
+        else if(monthNo==2)
+            return 'March';
+        else if(monthNo==3)
+            return 'April';
+        else if(monthNo==4)
+            return 'May';
+        else if(monthNo==5)
+            return 'June';
+        else if(monthNo==6)
+            return 'July';
+        else if(monthNo==7)
+            return 'August';
+        else if(monthNo==8)
+            return 'September';
+        else if(monthNo==9)
+            return 'October';
+        else if(monthNo==10)
+            return 'November';
+        else if(monthNo==11)
+            return 'December';
+    }
+    setDate();
+    getData();
+
+</script>
+</html>
